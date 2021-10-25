@@ -1,23 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const usersController = require("../controllers/users.controller");
+const postsController = require("../controllers/posts.controller");
 const jwt = require("jsonwebtoken");
 
 const auth = (req, res, next) => {
   const token = req.headers["authorization"];
-  console.log(token);
+  console.log(`auth routes`);
   try {
-    jwt.verify(token, "shahar");
+    const user = jwt.verify(token, "shahar");
+    req.userId = user.id;
     next();
   } catch (err) {
-    // err
-    // console.log(err);
-    res.status(403).send("Not Nice");
+    console.log(err);
+    res.status(403).send();
   }
 };
 
+router.get("/user/me", auth, usersController.me);
+router.post("/post", auth, postsController.create);
+router.get("/post", postsController.getAll);
 router.post("/user", usersController.create);
-router.get("/get", usersController.getAllUsers);
+router.post("/user/available", usersController.isAvailable);
 router.post("/login", usersController.login); // req.body => username, password
 router.get("/health", auth, (req, res) => {
   res.sendStatus(200);
