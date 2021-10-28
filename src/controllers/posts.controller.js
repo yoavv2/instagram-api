@@ -2,11 +2,12 @@ const Post = require("../models/post.js");
 
 async function create(req, res) {
   const { body } = req.body;
-  console.log(`postcontroller`);
   const tempPost = {
     body,
+    image: req.file.filename,
     author: req.userId,
   };
+  console.log("create post", tempPost);
   const post = new Post(tempPost);
   try {
     const savedPost = await post.save();

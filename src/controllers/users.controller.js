@@ -53,10 +53,25 @@ async function me(req, res) {
   }
 }
 
+async function getUser(req, res) {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ usename });
+    if (!user) {
+      res.sendStatus(400);
+    } else {
+      res.send(user);
+    }
+  } catch (err) {
+    res.sendStatus(500);
+  }
+}
+
 module.exports = {
   create,
   login,
   getAllUsers,
   isAvailable,
   me,
+  getUser,
 };

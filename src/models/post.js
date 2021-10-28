@@ -3,7 +3,6 @@ const { model, Schema } = require("mongoose");
 const postSchema = new Schema({
   body: {
     type: String,
-    required: true,
   },
   likes: {
     type: Array,
@@ -20,6 +19,7 @@ const postSchema = new Schema({
   },
   image: {
     type: String,
+    required: true,
   },
 });
 
