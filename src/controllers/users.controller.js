@@ -56,9 +56,9 @@ async function me(req, res) {
 async function getUser(req, res) {
   try {
     const { username } = req.params;
-    const user = await User.findOne({ usename });
+    const user = await User.findOne({ username });
     if (!user) {
-      res.sendStatus(400);
+      res.sendStatus(404);
     } else {
       res.send(user);
     }
@@ -66,6 +66,7 @@ async function getUser(req, res) {
     res.sendStatus(500);
   }
 }
+
 
 module.exports = {
   create,

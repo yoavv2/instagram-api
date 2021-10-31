@@ -23,7 +23,14 @@ async function getAll(req, res) {
   res.json(allPosts);
 }
 
+async function getPosts(req, res) {
+  const { username } = req.params;
+  const user = await User.findOne({ username });
+  const posts = await Post.find({ author: user._id }).populate();
+  res.send(posts);
+}
 module.exports = {
   create,
   getAll,
+  getPosts,
 };
