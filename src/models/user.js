@@ -23,6 +23,9 @@ const userSchema = new Schema({
     type: Date,
     default: () => new Date(),
   },
+  avatar: {
+    type: String,
+  },
 });
 
 module.exports = model("User", userSchema);

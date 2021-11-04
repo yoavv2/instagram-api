@@ -13,7 +13,9 @@ async function isAvailable(req, res) {
 
 async function create(req, res) {
   const user = new User(req.body);
-
+  let avatar = `https://avatars.dicebear.com/api/bottts/${user.username}.svg?background=%230000ff`;
+  user.avatar = avatar;
+  console.log("user : ", user);
   try {
     const savedUser = await user.save();
     res.status(201).send(savedUser);
@@ -60,13 +62,24 @@ async function getUser(req, res) {
     if (!user) {
       res.sendStatus(404);
     } else {
-      res.send(user);
+      res.json(user);
     }
   } catch (err) {
     res.sendStatus(500);
   }
 }
 
+async function search(req, res) {
+  const { username } = req.params;
+  try {
+    const users = await User.find({
+      username: new RegExp(username, "ig"),
+    });
+    res.json(users);
+  } catch (e) {
+    res.sendStatus(500);
+  }
+}
 
 module.exports = {
   create,
@@ -75,4 +88,5 @@ module.exports = {
   isAvailable,
   me,
   getUser,
+  search,
 };

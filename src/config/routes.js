@@ -37,12 +37,17 @@ const auth = (req, res, next) => {
 };
 
 router.get("/user/me", auth, usersController.me);
-router.get("/user/:username", auth, usersController.getUser);
+
 router.post("/post", auth, upload.single("image"), postsController.create);
+
 router.get("/post", postsController.getAll);
+router.get("/post/:username", auth, postsController.getPosts);
 
 router.post("/user", usersController.create);
+router.get("/user/:username", auth, usersController.getUser);
 router.post("/user/available", usersController.isAvailable);
+
+router.get("/search/user/:username", usersController.search);
 
 router.post("/login", usersController.login); // req.body => username, password
 router.get("/health", auth, (req, res) => {
