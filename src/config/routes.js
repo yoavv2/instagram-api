@@ -15,7 +15,9 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const extension = file.originalname.split(".").pop();
+    // const { fileExtention } = req.body;
+    console.log(file);
+    const extension = file.mimetype.split("/").pop();
     const fileName = (Math.random() + 1).toString(36).substring(7);
     cb(null, fileName + "." + extension);
   },
@@ -36,18 +38,20 @@ const auth = (req, res, next) => {
   }
 };
 
-router.get("/user/me", auth, usersController.me);
-
+router.post("/post/:id/like", auth, postsController.like);
+router.post("/post/:id/unlike", auth, postsController.unlike);
 router.post("/post", auth, upload.single("image"), postsController.create);
-
 router.get("/post", postsController.getAll);
 router.get("/post/:username", auth, postsController.getPosts);
 
+router.get("/user/me", auth, usersController.me);
 router.post("/user", usersController.create);
 router.get("/user/:username", auth, usersController.getUser);
 router.post("/user/available", usersController.isAvailable);
 
 router.get("/search/user/:username", usersController.search);
+router.post("/user/:username/follow", auth, usersController.follow);
+router.post("/user/:username/unfollow", auth, usersController.unfollow);
 
 router.post("/login", usersController.login); // req.body => username, password
 router.get("/health", auth, (req, res) => {

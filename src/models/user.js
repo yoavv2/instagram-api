@@ -26,6 +26,10 @@ const userSchema = new Schema({
   avatar: {
     type: String,
   },
+  following: {
+    type: Array,
+    default: [],
+  },
 });
 
 module.exports = model("User", userSchema);

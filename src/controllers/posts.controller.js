@@ -1,5 +1,8 @@
 const Post = require("../models/post.js");
 const User = require("../models/user.js");
+const mongoose = require("mongoose");
+// const { ObjectId } = require("mongoose");
+
 async function create(req, res) {
   const { body } = req.body;
   const tempPost = {
@@ -30,8 +33,24 @@ async function getPosts(req, res) {
   res.send(posts);
 }
 
+async function like(req, res) {
+  await Post.findByIdAndUpdate(req.params.id, {
+    $addToSet: { likes: mongoose.Types.ObjectId(req.userId) },
+  });
+  res.sendStatus(200);
+}
+
+async function unlike(req, res) {
+  await Post.findByIdAndUpdate(req.params.id, {
+    $pull: { likes: mongoose.Types.ObjectId(req.userId) },
+  });
+  res.sendStatus(200);
+}
+
 module.exports = {
   create,
   getAll,
   getPosts,
+  like,
+  unlike,
 };
