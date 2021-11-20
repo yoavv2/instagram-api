@@ -1,157 +1,9 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const md5 = require("md5");
+const mongoose = require("mongoose");
 
-let colors = [
-  "aliceBlue",
-  "antiqueWhite",
-  "aqua",
-  "aquamarine",
-  "azure",
-  "beige",
-  "bisque",
-  "black",
-  "blanchedAlmond",
-  "blue",
-  "blueViolet",
-  "brown",
-  "burlyWood",
-  "cadetBlue",
-  "chartreuse",
-  "chocolate",
-  "coral",
-  "cornflowerBlue",
-  "cornsilk",
-  "crimson",
-  "cyan",
-  "darkBlue",
-  "darkCyan",
-  "darkGoldenRod",
-  "darkGray",
-  "darkGrey",
-  "darkGreen",
-  "darkKhaki",
-  "darkMagenta",
-  "darkOliveGreen",
-  "darkOrange",
-  "darkOrchid",
-  "darkRed",
-  "darkSalmon",
-  "darkSeaGreen",
-  "darkSlateBlue",
-  "darkSlateGray",
-  "darkSlateGrey",
-  "darkTurquoise",
-  "darkViolet",
-  "deepPink",
-  "deepSkyBlue",
-  "dimGray",
-  "dimGrey",
-  "dodgerBlue",
-  "fireBrick",
-  "floralWhite",
-  "forestGreen",
-  "fuchsia",
-  "gainsboro",
-  "ghostWhite",
-  "gold",
-  "goldenRod",
-  "gray",
-  "grey",
-  "green",
-  "greenYellow",
-  "honeyDew",
-  "hotPink",
-  "indianRed",
-  "indigo",
-  "ivory",
-  "khaki",
-  "lavender",
-  "lavenderBlush",
-  "lawnGreen",
-  "lemonChiffon",
-  "lightBlue",
-  "lightCoral",
-  "lightCyan",
-  "lightGoldenRodYellow",
-  "lightGray",
-  "lightGrey",
-  "lightGreen",
-  "lightPink",
-  "lightSalmon",
-  "lightSeaGreen",
-  "lightSkyBlue",
-  "lightSlateGray",
-  "lightSlateGrey",
-  "lightSteelBlue",
-  "lightYellow",
-  "lime",
-  "limeGreen",
-  "linen",
-  "magenta",
-  "maroon",
-  "mediumAquaMarine",
-  "mediumBlue",
-  "mediumOrchid",
-  "mediumPurple",
-  "mediumSeaGreen",
-  "mediumSlateBlue",
-  "mediumSpringGreen",
-  "mediumTurquoise",
-  "mediumVioletRed",
-  "midnightBlue",
-  "mintCream",
-  "mistyRose",
-  "moccasin",
-  "navajoWhite",
-  "navy",
-  "oldLace",
-  "olive",
-  "oliveDrab",
-  "orange",
-  "orangeRed",
-  "orchid",
-  "paleGoldenRod",
-  "paleGreen",
-  "paleTurquoise",
-  "paleVioletRed",
-  "papayaWhip",
-  "peachPuff",
-  "peru",
-  "pink",
-  "plum",
-  "powderBlue",
-  "purple",
-  "rebeccaPurple",
-  "red",
-  "rosyBrown",
-  "royalBlue",
-  "saddleBrown",
-  "salmon",
-  "sandyBrown",
-  "seaGreen",
-  "seaShell",
-  "sienna",
-  "silver",
-  "skyBlue",
-  "slateBlue",
-  "slateGray",
-  "slateGrey",
-  "snow",
-  "springGreen",
-  "steelBlue",
-  "tan",
-  "teal",
-  "thistle",
-  "tomato",
-  "turquoise",
-  "violet",
-  "wheat",
-  "whiteSmoke",
-  "ellow",
-  "yellowGreen",
-];
-let randColor = colors[Math.floor(Math.random() * colors.length)];
+const { randColor } = require("./avatarBackgrounds");
 
 async function getAllUsers(req, res) {
   const users = await User.find({});
@@ -197,6 +49,7 @@ async function login(req, res) {
 }
 
 async function me(req, res) {
+  console.log(`res.body`, res.body);
   try {
     const user = await User.findById(req.userId);
     if (!user) {
@@ -240,16 +93,25 @@ async function follow(req, res) {
   const myId = req.userId;
   try {
     const whoToFollow = await User.findOne({ username });
+
     if (!whoToFollow) {
       res.sendStatus(400);
       return;
     }
+    const whoToFollowId = whoToFollow._id.toString();
+    console.log("whoToFollowId => ", whoToFollow._id);
+    console.log("myId=> ", myId);
+
     await User.findByIdAndUpdate(myId, {
       $addToSet: { following: mongoose.Types.ObjectId(whoToFollow._id) },
     });
+    await User.findByIdAndUpdate(whoToFollowId, {
+      $addToSet: { followers: mongoose.Types.ObjectId(myId) },
+    });
+
     res.send();
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
     res.sendStatus(500);
   }
 }
@@ -258,17 +120,22 @@ async function unfollow(req, res) {
   const { username } = req.params;
   const myId = req.userId;
   try {
-    const whoToUnFollow = await User.findOne({ username });
-    if (!whoToUnFollow) {
+    const whoToUnfollow = await User.findOne({ username });
+
+    if (!whoToUnfollow) {
       res.sendStatus(400);
       return;
     }
-    await User.findOneAndUpdate(myId, {
-      $pull: { following: mongoose.Types.ObjectId(whoTounFollow._id) },
+    const whoToUnfollowId = whoToUnfollow._id.toString();
+    await User.findByIdAndUpdate(myId, {
+      $pull: { following: mongoose.Types.ObjectId(whoToUnfollow._id) },
+    });
+    await User.findByIdAndUpdate(whoToUnfollowId, {
+      $pull: { followers: mongoose.Types.ObjectId(myId) },
     });
     res.send();
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
     res.sendStatus(500);
   }
 }

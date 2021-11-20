@@ -19,6 +19,11 @@ const postSchema = new Schema({
   },
   image: {
     type: String,
+    // required: true,
+  },
+  images: {
+    type: Array,
+    default: () => [],
     required: true,
   },
 });

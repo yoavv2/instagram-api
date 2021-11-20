@@ -30,6 +30,10 @@ const userSchema = new Schema({
     type: Array,
     default: [],
   },
+  followers: {
+    type: Array,
+    default: [],
+  },
 });
 
 module.exports = model("User", userSchema);

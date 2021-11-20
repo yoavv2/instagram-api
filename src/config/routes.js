@@ -8,26 +8,22 @@ const postsController = require("../controllers/posts.controller");
 
 //? multipart-data
 const multer = require("multer");
-
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: (req, file, cb) => {
     cb(null, "public");
   },
   filename: (req, file, cb) => {
-    // const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    // const { fileExtention } = req.body;
-    console.log(file);
     const extension = file.mimetype.split("/").pop();
     const fileName = (Math.random() + 1).toString(36).substring(7);
     cb(null, fileName + "." + extension);
   },
 });
-
 const upload = multer({ storage });
 
 const auth = (req, res, next) => {
   const token = req.headers["authorization"];
   console.log(`auth routes`);
+
   try {
     const user = jwt.verify(token, "shahar");
     req.userId = user.id;
@@ -40,9 +36,15 @@ const auth = (req, res, next) => {
 
 router.post("/post/:id/like", auth, postsController.like);
 router.post("/post/:id/unlike", auth, postsController.unlike);
-router.post("/post", auth, upload.single("image"), postsController.create);
+router.post("/post/:id/comment", auth, postsController.createComment);
+router.get("/post/:id/comment", auth, postsController.getComments);
+
+router.get("/post/:id", auth, postsController.getOnePost);
+router.post("/post", auth, upload.array("images", 5), postsController.create);
+// router.post("/post", auth, upload.single("image"), postsController.create);
+
 router.get("/post", postsController.getAll);
-router.get("/post/:username", auth, postsController.getPosts);
+router.get("/user/:username/post", auth, postsController.getPosts);
 
 router.get("/user/me", auth, usersController.me);
 router.post("/user", usersController.create);
