@@ -56,7 +56,7 @@ router.get("/post", postsController.getAll);
 router.get("/user/:username/post", auth, postsController.getPosts);
 
 router.post("/login", usersController.login); // req.body => username, password
-router.get("/health", auth, (req, res) => {
+router.get("/health", (req, res) => {
   res.sendStatus(200);
 });
 
