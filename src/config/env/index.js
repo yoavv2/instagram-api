@@ -1,7 +1,7 @@
-const develpoment = require("./development");
+const development = require("./development");
 const production = require("./production");
 
-let enviroment = develpoment;
+let enviroment = development;
 if (process.env.NODE_ENV === "production") {
   enviroment = production;
 }
