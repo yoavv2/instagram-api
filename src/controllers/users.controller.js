@@ -20,7 +20,7 @@ async function create(req, res) {
   user.password = md5(user.password);
   let avatar = `https://avatars.dicebear.com/api/bottts/${user.username}.svg?background=${randColor}`;
   user.avatar = avatar;
-  console.log("user : ", user);
+
   try {
     const savedUser = await user.save();
     res.status(201).send(savedUser);
@@ -49,7 +49,6 @@ async function login(req, res) {
 }
 
 async function me(req, res) {
-  console.log(`res.body`, res.body);
   try {
     const user = await User.findById(req.userId);
     if (!user) {
@@ -99,8 +98,6 @@ async function follow(req, res) {
       return;
     }
     const whoToFollowId = whoToFollow._id.toString();
-    console.log("whoToFollowId => ", whoToFollow._id);
-    console.log("myId=> ", myId);
 
     await User.findByIdAndUpdate(myId, {
       $addToSet: { following: mongoose.Types.ObjectId(whoToFollow._id) },

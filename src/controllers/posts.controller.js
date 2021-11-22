@@ -1,12 +1,13 @@
-const Post = require("../models/post.js");
 const User = require("../models/user.js");
+const Post = require("../models/post.js");
+
 const Comment = require("../models/comment.js");
 const mongoose = require("mongoose");
 // const { ObjectId } = require("mongoose");
 
 async function create(req, res) {
   const { body } = req.body;
-  console.log("what", req);
+
   const arrayOfPaths = [];
   req.files.map((file) => {
     arrayOfPaths.push(file.filename);
@@ -60,6 +61,8 @@ async function unlike(req, res) {
 }
 
 async function createComment(req, res) {
+  console.log("req.body", req.body);
+
   const comment = new Comment({
     author: req.userId,
     post: req.params.id,
@@ -67,8 +70,8 @@ async function createComment(req, res) {
   });
 
   try {
-    console.log("comment", comment);
     let createdComment = await comment.save();
+    console.log("createdComment ", createdComment._id);
     createdComment = await Comment.findById(createdComment._id).populate(
       "author"
     );

@@ -17,10 +17,7 @@ const postSchema = new Schema({
     type: Date,
     default: () => new Date(),
   },
-  image: {
-    type: String,
-    // required: true,
-  },
+
   images: {
     type: Array,
     default: () => [],

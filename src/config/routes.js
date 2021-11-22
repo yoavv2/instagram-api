@@ -34,6 +34,15 @@ const auth = (req, res, next) => {
   }
 };
 
+router.get("/user/me", auth, usersController.me);
+router.post("/user", usersController.create);
+router.get("/user/:username", auth, usersController.getUser);
+router.post("/user/available", usersController.isAvailable);
+
+router.get("/search/user/:username", usersController.search);
+router.post("/user/:username/follow", auth, usersController.follow);
+router.post("/user/:username/unfollow", auth, usersController.unfollow);
+
 router.post("/post/:id/like", auth, postsController.like);
 router.post("/post/:id/unlike", auth, postsController.unlike);
 router.post("/post/:id/comment", auth, postsController.createComment);
@@ -45,15 +54,6 @@ router.post("/post", auth, upload.array("images", 5), postsController.create);
 
 router.get("/post", postsController.getAll);
 router.get("/user/:username/post", auth, postsController.getPosts);
-
-router.get("/user/me", auth, usersController.me);
-router.post("/user", usersController.create);
-router.get("/user/:username", auth, usersController.getUser);
-router.post("/user/available", usersController.isAvailable);
-
-router.get("/search/user/:username", usersController.search);
-router.post("/user/:username/follow", auth, usersController.follow);
-router.post("/user/:username/unfollow", auth, usersController.unfollow);
 
 router.post("/login", usersController.login); // req.body => username, password
 router.get("/health", auth, (req, res) => {
