@@ -15,7 +15,7 @@ app.use(routes);
 mongoose
   .connect(env.mongoUrl)
   .then(listen)
-  .catch(() => console.error(err));
+  .catch((err) => console.error(err));
 
 function listen() {
   app.listen(port, () => {
