@@ -10,8 +10,12 @@ async function create(req, res) {
 
   const arrayOfPaths = [];
   req.files.map((file) => {
-    arrayOfPaths.push(file.filename);
+    arrayOfPaths.push(
+      "https://res.cloudinary.com/dazmhcufp/image/upload/v1638469793/" +
+        file.filename
+    );
   });
+  console.log(`req`, req.files);
   const tempPost = {
     body,
     images: arrayOfPaths,
@@ -75,7 +79,6 @@ async function createComment(req, res) {
     createdComment = await Comment.findById(createdComment._id).populate(
       "author"
     );
-    console.log(createdComment);
 
     res.json(createdComment);
   } catch (e) {

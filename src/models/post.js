@@ -17,7 +17,10 @@ const postSchema = new Schema({
     type: Date,
     default: () => new Date(),
   },
-
+  comments: {
+    type: Array,
+    default: () => [],
+  },
   images: {
     type: Array,
     default: () => [],

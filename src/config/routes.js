@@ -8,16 +8,32 @@ const postsController = require("../controllers/posts.controller");
 
 //? multipart-data
 const multer = require("multer");
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "public");
-  },
-  filename: (req, file, cb) => {
-    const extension = file.mimetype.split("/").pop();
-    const fileName = (Math.random() + 1).toString(36).substring(7);
-    cb(null, fileName + "." + extension);
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+cloudinary.config({
+  cloud_name: "dazmhcufp",
+  api_key: "485835333861858",
+  api_secret: "jcDuAVJjEG5k0rFZOnKwzUWgOM0",
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "uploads",
+    format: (req, file) => "jpeg", // supports promises as well
   },
 });
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "public");
+//   },
+//   filename: (req, file, cb) => {
+//     const extension = file.mimetype.split("/").pop();
+//     const fileName = (Math.random() + 1).toString(36).substring(7);
+//     cb(null, fileName + "." + extension);
+//   },
+// });
+
 const upload = multer({ storage });
 
 const auth = (req, res, next) => {

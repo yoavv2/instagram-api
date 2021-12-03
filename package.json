@@ -20,13 +20,15 @@
   },
   "homepage": "https://github.com/yoavv2/instagram-api#readme",
   "dependencies": {
+    "cloudinary": "^1.27.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
     "mogodb": "^0.0.1-security",
     "mongoose": "^6.0.9",
-    "multer": "^1.4.3"
+    "multer": "^1.4.3",
+    "multer-storage-cloudinary": "^4.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.13"
