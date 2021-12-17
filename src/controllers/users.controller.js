@@ -18,7 +18,7 @@ async function isAvailable(req, res) {
 async function create(req, res) {
   const user = new User(req.body);
   user.password = md5(user.password);
-  let avatar = `https://avatars.dicebear.com/api/bottts/${user.username}.svg?background=${randColor}`;
+  let avatar = `https://avatars.dicebear.com/api/adventurer/${user.username}.svg?background=${randColor}`;
   user.avatar = avatar;
 
   try {

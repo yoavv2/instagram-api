@@ -24,6 +24,7 @@ async function create(req, res) {
   const post = new Post(tempPost);
   try {
     const savedPost = await post.save();
+
     res.status(201).send(savedPost);
   } catch (err) {
     console.log(err);
