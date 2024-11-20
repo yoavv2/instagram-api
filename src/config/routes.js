@@ -69,6 +69,7 @@ const auth = (req, res, next) => {
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     console.log('No Bearer token provided');
+    console.log('Request rejected due to missing Bearer token');
     return res.status(401).json({ message: 'No Bearer token provided' });
   }
 
@@ -83,10 +84,12 @@ const auth = (req, res, next) => {
     
     req.userId = decoded.id;
     console.log('Set req.userId:', req.userId);
+    console.log('Authentication successful, proceeding with request');
     
     next();
   } catch (err) {
     console.error('Token verification failed:', err);
+    console.log('Request rejected due to invalid or expired token');
     res.status(403).json({ message: 'Invalid or expired token' });
   }
 };
@@ -117,7 +120,7 @@ router.get("/post", postsController.getAll);
 router.get("/user/:username/post", auth, postsController.getPosts);
 
 // Auth routes
-router.post("/login", usersController.login);
+router.post("/user/login", usersController.login);
 router.get("/health", (req, res) => {
   res.sendStatus(200);
 });
